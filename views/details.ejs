@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Save Movie</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+                        font-family: 'Baskerville';
+
+        }
+
+        .container {
+            font-family: 'Baskerville';
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        a {
+            display: block;
+            margin-top: 10px;
+            color: #007bff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img src="<%= movie.poster %>" alt="<%= movie.title %> Poster" width="200" class="mx-auto">
+
+        <h3><%= movie.title %></h3>
+        <p><strong>Year:</strong> <%= movie.year %></p>
+        <p><strong>Director:</strong> <%= movie.director %></p>
+        <p><strong>Box Office:</strong> <%= movie.boxOffice %></p>
+        <p><strong>Genre:</strong> <%= movie.genre %></p>
+        <p><strong>Plot:</strong> <%= movie.plot %></p>
+        <p><strong>Awards:</strong> <%= movie.awards %></p>
+        
+
+        <a href="/" class="btn btn-link">Search Again</a>
+    </div>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

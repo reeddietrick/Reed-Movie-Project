@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Database</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baskerville&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Petit+Formal+Script&display=swap">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVl7eZaSTExURgfaL/Z9nUUTf0Ymzk5LBMWO5SBI4l9bQ"
+    crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.15.0/font/bootstrap-icons.css">
+<style>
+    
+    .selectedMovie {
+        background-color: white; /* Light gray background color */
+        text-align: center;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle box shadow */
+    }
+
+    .selectedMovie h4 {
+        color: #343a40; /* Dark gray text color */
+    }
+
+    .selectedMovie img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle image shadow */
+    }
+
+    .selectedMovie ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .selectedMovie ul li {
+        color: #6c757d; /* Medium gray text color */
+        margin-bottom: 10px;
+    }
+
+    .selectedMovie p {
+        color: #6c757d; /* Medium gray text color */
+    }
+
+    #selected-title {
+        font-weight: bold;
+        color: #ba728a; /* Dark pink color for title */
+    }
+    .alert-info {
+            background-color: #fcedf2; /* Light pink background color */
+            border-color: #f0b4c4; /* Light pink border color */
+            color: #8f4a5d; /* Dark pink text color */
+        }
+</style>
+
+<script>
+    let selectedMovies = [];
+
+   async function handleMovieClick(movieId) {
+    try {
+        const response = await fetch(`/details/${movieId}`);
+        const movie = await response.json();
+        selectedMovies.push(movie.selectedMovie);
+        updateSelectedMoviesDisplay();
+        
+        // Toggle the selected state of the favorite button
+        const favoriteButton = document.querySelector(`[data-movie-id="${movie.selectedMovie._id}"] .favorite-btn`);
+        favoriteButton.dataset.selected = (favoriteButton.dataset.selected === "true") ? "false" : "true";
+    } catch (error) {
+        console.error('Error fetching movie details:', error);
+    }
+}
+
+    
+    function updateMovieList() {
+        const movieListContainer = document.querySelector('.list-group');
+
+        savedMovies.forEach(movie => {
+            const listItem = movieListContainer.querySelector(`[data-movie-id="${movie._id}"]`);
+        });
+    }
+
+    function updateSelectedMoviesDisplay() {
+    const selectedMoviesContainer = document.querySelector('.selectedMovie');
+    selectedMoviesContainer.innerHTML = '';
+
+    if (selectedMovies.length > 0) {
+        const movie = selectedMovies[selectedMovies.length - 1];
+        const movieDetails = document.createElement('div');
+        movieDetails.innerHTML = `
+        
+        <h4>${movie.title}</h4>
+        <img src="${movie.poster}" alt="${movie.title} Poster" class="img-thumbnail" width="200">
+        <strong><ul>Year:</strong> ${movie.year}</ul>
+       <strong><ul>Director:</strong> ${movie.director}</ul>
+        <strong><ul>Genre:</strong> ${movie.genre}</ul>
+        <strong><ul>Awards:</strong> ${movie.awards}</ul>
+        <strong><ul>Plot:</strong> ${movie.plot}</ul>
+        <em><p>Watched ${movie.timesWatched} times</p></em>`;
+        selectedMoviesContainer.appendChild(movieDetails);
+    }
+}
+
+
+</script>
+
+
+
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="#">Reed's Movie Database ˚ ༘♡ ⋆｡˚</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <!-- Dropdown menu for sorting by genre -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Sort by Genre
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+    <a class="dropdown-item" href="/sort?genre=action">Horror</a>
+    <a class="dropdown-item" href="/sort?genre=drama">Drama</a>
+    <a class="dropdown-item" href="/sort?genre=comedy">Comedy</a>
+    <!-- Add more genre options as needed -->
+</div>
+            </li>
+            </ul>
+            <form action="/search" method="POST" class="form-inline ml-auto mb-2">
+                <div class="input-group">
+                    <input type="text" name="movieTitle" class="form-control form-control-baskerville"
+                        placeholder="Search...">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary btn-pink">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="gallery-column">
+            <h2>Saved Movies</h2>
+            <% if (flashMessages.update) { %>
+                <p class="alert alert-info"><%= flashMessages.update %></p>
+            <% } %>
+            <p class="text-muted">You've watched <%= totalMovies %> movies a total of <%= totalTimesWatched %> times!</p>
+            <form action="/sort" method="POST" class="mb-3">
+    <button type="submit" class="btn btn-light btn-pink" style="background-color: #d99ab3;">Sort</button>
+</form>
+            <ul class="list-group">
+               
+                <% savedMovies.forEach(movie => { %>
+                    <li class="list-group-item d-flex justify-content-between align-items-center movie-item"
+    data-movie-id="<%= movie._id %>" onclick="handleMovieClick('<%= movie._id %>')">
+    <a href="#" class="btn btn-outline-danger btn-sm favorite-btn" data-selected="false">
+        <i class="bi bi-suit-heart-fill"></i>
+    </a>
+    <% if (movie.poster) { %>
+        <img src="<%= movie.poster %>" alt="<%= movie.title %> Poster" class="img-thumbnail" width="100">
+    <% } %>
+    <div>
+        <h5 id="movie-list-header"><%= movie.title %></h5>
+        <p class="text-muted">Watched: <%= movie.timesWatched %> times</p>
+        <div class="btn-group">
+            <a href="watch/<%= movie._id %>" class="btn btn-info btn-sm">Watch</a>
+            <a href="delete/<%= movie._id %>" class="btn btn-danger btn-sm">Delete</a>
+            <a href="/info/<%= movie._id %>" class="btn btn-primary btn-sm">Details</a>
+        </div>
+    </div>
+</li>
+                <% }); %>
+            </ul>
+        </div>
+
+    <div class="details-column">
+        <h2 id="selected-movie-header">Selected Movie Details</h2>
+        <div class="selectedMovie"></div>
+    </div>
+    
+    </div>
+    
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
